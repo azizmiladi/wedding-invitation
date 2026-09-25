@@ -1,0 +1,312 @@
+:root {
+  color-scheme: light;
+  --frame-color: rgba(143, 95, 42, .48);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { margin: 0; min-height: 100%; }
+
+body {
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse 74% 68% at 50% 40%, rgba(255, 252, 248, .65), transparent 100%),
+    linear-gradient(135deg, #f5ece2 0%, #faf5ee 52%, #f1e6da 100%);
+}
+
+body.intro-open { overflow: hidden; }
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  background: #f7efe6;
+}
+
+.intro-video-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-video {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  background: #efe6dc;
+}
+
+.intro-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+  background: rgba(247, 239, 230, .94);
+}
+
+.intro-button {
+  cursor: pointer;
+  border: 1px solid #926a38;
+  border-radius: 999px;
+  padding: 9px 22px;
+  color: #fffaf3;
+  background: #8b642f;
+  font: 1.12rem 'Amiri', 'Noto Naskh Arabic', serif;
+  line-height: 1.4;
+}
+
+.intro-button--secondary { color: #6d4c29; background: rgba(255, 255, 255, .55); }
+.intro-button:focus-visible { outline: 3px solid #b98745; outline-offset: 3px; }
+
+.background-flowers {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.background-flowers--top {
+  top: 0;
+  left: 0;
+  width: clamp(260px, 38vw, 700px);
+  aspect-ratio: 1090 / 1443;
+  background-image: url('assets/flowers-top-left.png');
+  background-position: top left;
+}
+
+.background-flowers--bottom {
+  right: 0;
+  bottom: 0;
+  width: clamp(230px, 32vw, 560px);
+  aspect-ratio: 970 / 1622;
+  background-image: url('assets/flowers-bottom-right.png');
+  background-position: bottom right;
+}
+
+.sections {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 2 * clamp(12px, 3vw, 40px));
+  max-width: 1100px;
+  margin: clamp(12px, 3vw, 40px) auto;
+  border: 1px solid rgba(143, 95, 42, .56);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .10);
+  -webkit-backdrop-filter: blur(2px) saturate(1.04);
+  backdrop-filter: blur(2px) saturate(1.04);
+  box-shadow: 0 18px 45px rgba(93, 62, 31, .08), inset 0 1px 0 rgba(255, 255, 255, .4);
+}
+
+.section-frame {
+  width: 100%;
+  margin: 0;
+}
+
+.first-section { display: grid; place-items: center; min-height: clamp(200px, 32svh, 330px); padding: 20px; }
+
+.basmala {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  color: #8b612e;
+  font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+  font-size: clamp(1.85rem, 4vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.75;
+  white-space: nowrap;
+  text-align: center;
+  text-shadow: 0 2px 14px rgba(255, 249, 239, .9);
+}
+
+.basmala span { display: inline-block; flex: 0 0 auto; transform-origin: center center; }
+
+.invitation-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px clamp(26px, 6vw, 92px);
+}
+
+.invitation-copy {
+  width: min(100%, 740px);
+  min-width: 0;
+  margin: auto;
+  color: #4b3528;
+  font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+  text-align: center;
+  text-shadow: 0 1px 5px rgba(255, 250, 241, .92);
+}
+
+.verse {
+  color: #89632f;
+  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+  line-height: 2.05;
+  margin: 0 auto 18px;
+}
+
+.ornament {
+  width: min(180px, 68%);
+  margin: 10px auto 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #91682e;
+  font: 1rem Georgia, serif;
+}
+
+.ornament::before,.ornament::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(to right, transparent, #a87f49);
+}
+
+.ornament::after { transform: rotate(180deg); }
+.ornament-small { width: 125px; margin: 5px auto; }
+.invitation-intro { margin: 4px auto 10px; font-size: clamp(1.4rem, 2.7vw, 2rem); }
+
+.family-name {
+  margin: 5px auto;
+  color: #8b642f;
+  font-size: clamp(1.3rem, 2.5vw, 1.95rem);
+  line-height: 1.9;
+}
+
+.waw { display: inline-block; color: #91682e; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; }
+
+.invitation-message {
+  margin: 20px auto 4px;
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  line-height: 1.9;
+}
+
+.wedding-heading {
+  margin: 5px auto 8px;
+  color: #8b642f;
+  font-size: clamp(1.75rem, 3.3vw, 2.4rem);
+  font-weight: 400;
+}
+
+.couple-names {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  color: #8b642f;
+  font-size: clamp(1.4rem, 2.8vw, 2.15rem);
+}
+
+.couple-names > span { min-width: 0; white-space: nowrap; }
+.couple-names .waw { font-size: clamp(2rem, 4vw, 3rem); }
+.closing { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.95rem); }
+
+.details-section,.place-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 54px clamp(26px, 6vw, 90px);
+}
+
+.details-copy,.place-copy {
+  width: min(100%, 680px);
+  text-align: center;
+  color: #4b3528;
+  font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+  text-shadow: 0 1px 5px rgba(255, 250, 241, .9);
+}
+
+.section-title {
+  margin: 0;
+  color: #8b642f;
+  font-size: clamp(2.4rem, 5vw, 3.7rem);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.wedding-date { margin: 18px auto 0; font-size: clamp(1.65rem, 3.4vw, 2.6rem); }
+.wedding-time { margin: 1px auto 36px; color: #8b642f; font-size: clamp(1.45rem, 2.8vw, 2.05rem); }
+.countdown-heading { margin: 0 auto 18px; font-size: clamp(1.2rem, 2vw, 1.5rem); }
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(6px, 1.4vw, 15px);
+  direction: ltr;
+}
+
+.countdown > div {
+  direction: rtl;
+  min-width: 0;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(143, 95, 42, .45);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.countdown strong { color: #8b642f; font-size: clamp(1.9rem, 3.8vw, 2.8rem); font-weight: 400; line-height: 1.15; }
+.countdown span { font-size: clamp(.95rem, 1.7vw, 1.2rem); }
+.venue-name { margin: 24px auto; font-size: clamp(1.35rem, 2.6vw, 1.8rem); }
+
+.map-frame {
+  width: 100%;
+  min-height: 260px;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(143, 95, 42, .5);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.map-frame iframe { width: 100%; height: 100%; border: 0; }
+.map-frame p { padding: 16px; font-size: clamp(1.15rem, 2vw, 1.5rem); }
+
+@media (max-width: 900px) {
+  .background-flowers--top { width: clamp(220px, 45vw, 440px); }
+  .background-flowers--bottom { width: clamp(190px, 39vw, 380px); }
+  .first-section { min-height: clamp(200px, 32svh, 300px); }
+}
+
+@media (max-width: 600px) {
+  .background-flowers--top { width: clamp(180px, 55vw, 300px); }
+  .background-flowers--bottom { width: clamp(180px, 48vw, 270px); }
+  .intro-video { width: 100%; height: 100%; max-width: none; }
+  .intro-actions { gap: 8px; padding-inline: 10px; }
+  .intro-button { padding: 8px 14px; font-size: 1rem; }
+  .first-section { min-height: clamp(190px, 30svh, 250px); }
+  .invitation-section { padding: 28px 26px 48px; }
+  .verse { font-size: 1.22rem; line-height: 1.9; margin-bottom: 12px; }
+  .invitation-intro { font-size: 1.45rem; }
+  .family-name { font-size: 1.27rem; line-height: 1.8; }
+  .invitation-message { font-size: 1.25rem; margin-top: 15px; }
+  .wedding-heading { font-size: 1.85rem; }
+  .couple-names { font-size: clamp(1.15rem, 4.5vw, 1.5rem); column-gap: 4px; }
+  .closing { font-size: 1.35rem; }
+  .details-section,.place-section { padding: 48px 26px; }
+  .countdown > div { min-height: 80px; }
+  .countdown strong { font-size: 1.8rem; }
+  .map-frame { min-height: 210px; aspect-ratio: 4 / 3; }
+}
