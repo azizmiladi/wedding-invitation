@@ -2,7 +2,7 @@
 
 // The date is given in Tunisian local time. Add the confirmed venue later.
 const WEDDING = {
-  dateISO: '2027-03-22T17:00:00+01:00',
+  dateISO: '2027-03-21T17:00:00+01:00',
   venueName: '',
   mapQuery: ''
 };
