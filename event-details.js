@@ -41,9 +41,18 @@ if (WEDDING.venueName) {
   document.getElementById('venue-name').textContent = WEDDING.venueName;
 }
 const mapSearch = WEDDING.mapQuery || WEDDING.venueName;
-if (mapSearch) {
+function loadMap() {
+  if (!mapSearch) return;
   const map = document.getElementById('venue-map');
+  if (map.src) return;
   map.src = `https://www.google.com/maps?q=${encodeURIComponent(mapSearch)}&output=embed`;
   map.hidden = false;
   document.getElementById('map-placeholder').hidden = true;
+}
+// The map is heavy: load it only once the guest has entered the invitation,
+// so it does not compete with the opening video for bandwidth.
+if (document.body.classList.contains('intro-open')) {
+  window.addEventListener('wedding:opened', loadMap, { once: true });
+} else {
+  loadMap();
 }

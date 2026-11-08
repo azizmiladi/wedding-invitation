@@ -6,6 +6,7 @@ const enterButton = document.getElementById('enter-button');
 const soundButton = document.getElementById('sound-button');
 const playButton = document.getElementById('play-button');
 const videoError = document.getElementById('video-error');
+const videoLoading = document.getElementById('video-loading');
 const languageGate = document.getElementById('language-gate');
 const languageNav = document.querySelector('.language-switch');
 let openingStarted = false;
@@ -33,6 +34,28 @@ function attemptPlayback(allowMutedRetry = true) {
     } else playButton.hidden = false;
   });
 }
+let currentSrc = '';
+// Smaller file on slow connections or when Data Saver is on.
+function videoSource(language) {
+  const c = navigator.connection || {};
+  const slow = c.saveData || /^(slow-2g|2g|3g)$/.test(c.effectiveType || '') || (c.downlink > 0 && c.downlink < 1.2);
+  return `assets/wedding-${language === 'en' ? 'en' : 'ar'}${slow ? '-low' : ''}.mp4`;
+}
+function setVideoSource(language) {
+  const src = videoSource(language);
+  if (src === currentSrc && !video.error) return false;
+  currentSrc = src;
+  video.src = src;
+  video.preload = 'auto';
+  video.load();
+  return true;
+}
+// Start downloading while the guest is still on the language screen.
+function warmVideo(language) {
+  if (openingStarted) return;
+  video.defaultMuted = true; video.muted = true;
+  setVideoSource(language);
+}
 function loadVideo(language) {
   const request = ++videoRequest;
   clearTimeout(stallTimer);
@@ -47,14 +70,14 @@ function loadVideo(language) {
   video.setAttribute('playsinline', '');
   video.setAttribute('webkit-playsinline', '');
   try { video.volume = 1; } catch {}
-  video.src = language === 'en' ? 'assets/wedding-en.mp4' : 'assets/wedding-ar.mp4';
-  video.preload = 'auto'; video.load();
+  if (!setVideoSource(language) && video.ended) video.currentTime = 0;
   playButton.hidden = true; videoError.hidden = true;
+  videoLoading.hidden = video.readyState >= 3;
   soundButton.hidden = false;
   syncSoundButton();
   attemptPlayback();
   stallTimer = setTimeout(() => {
-    if (request === videoRequest && introActive() && video.paused && !video.ended) playButton.hidden = false;
+    if (request === videoRequest && introActive() && video.paused && !video.ended && video.readyState >= 2) playButton.hidden = false;
   }, 6000);
 }
 function beginInvitation(language) {
@@ -98,6 +121,8 @@ video.addEventListener('error', () => {
   if (introActive()) { videoError.hidden = false; playButton.hidden = true; }
 });
 video.addEventListener('ended', () => { soundButton.hidden = true; });
+video.addEventListener('waiting', () => { if (introActive()) videoLoading.hidden = false; });
+['playing', 'canplay', 'error'].forEach(name => video.addEventListener(name, () => { videoLoading.hidden = true; }));
 enterButton.addEventListener('click', () => {
   if (enterButton.disabled) return;
   enterButton.disabled = true; soundButton.disabled = true;
@@ -119,6 +144,17 @@ function finishOpening() {
   content.inert = false; content.removeAttribute('aria-hidden');
   content.classList.remove('is-entering');
   content.querySelector('h1').focus({ preventScroll: true });
+  window.dispatchEvent(new Event('wedding:opened'));
 }
 // Standard URL waits for a choice; a language-specific URL starts directly.
 if (window.WeddingI18n.directLanguage) beginInvitation(window.WeddingI18n.directLanguage);
+// Warm-up: fetch the opening video while the guest is choosing a language.
+if (!window.WeddingI18n.directLanguage) {
+  warmVideo(document.documentElement.lang);
+  document.querySelectorAll('[data-start-language]').forEach(button => {
+    const warm = () => warmVideo(button.dataset.startLanguage);
+    button.addEventListener('pointerenter', warm, { passive: true });
+    button.addEventListener('touchstart', warm, { passive: true });
+    button.addEventListener('focus', warm);
+  });
+}

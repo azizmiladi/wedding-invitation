@@ -160,7 +160,7 @@ body.language-pending .sections { visibility: hidden; }
   left: 0;
   width: clamp(260px, 38vw, 700px);
   aspect-ratio: 1090 / 1443;
-  background-image: url('assets/flowers-top-left.png');
+  background-image: url('assets/flowers-top-left.webp');
   background-position: top left;
 }
 
@@ -169,7 +169,7 @@ body.language-pending .sections { visibility: hidden; }
   bottom: 0;
   width: clamp(230px, 32vw, 560px);
   aspect-ratio: 970 / 1622;
-  background-image: url('assets/flowers-bottom-right.png');
+  background-image: url('assets/flowers-bottom-right.webp');
   background-position: bottom right;
 }
 
@@ -555,3 +555,12 @@ html[lang="en"] .countdown span { text-transform: uppercase; letter-spacing: .07
   html[lang="en"] .couple-names { font-size: 2.15rem; }
   html[lang="en"] .invitation-message { font-size: .95rem; letter-spacing: .055em; }
 }
+
+/* Loading ring shown while the opening video buffers */
+.video-loading {
+  position: absolute; top: 45%; left: 50%; z-index: 2; width: 46px; height: 46px; margin: -23px 0 0 -23px;
+  border: 3px solid rgba(255, 247, 231, .35); border-top-color: #fff7e7; border-radius: 50%;
+  animation: video-spin 1s linear infinite; pointer-events: none;
+}
+@keyframes video-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .video-loading { animation-duration: 3s; } }
