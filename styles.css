@@ -16,6 +16,19 @@ body {
 }
 
 body.intro-open { overflow: hidden; }
+.video-play-button {
+  position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 3;
+  display: grid; justify-items: center; gap: 10px; padding: 20px 28px; min-width: 150px;
+  border: 1px solid rgba(255, 244, 217, .9); border-radius: 18px;
+  color: #fff7e7; background: rgba(80, 52, 26, .85); box-shadow: 0 10px 35px #0003;
+  font: 1.1rem/1.5 Georgia, 'Amiri', serif; cursor: pointer;
+}
+.video-play-button > span:first-child { font: 2rem/1 Arial, sans-serif; }
+.video-error {
+  position: absolute; inset-inline: 20px; bottom: 155px; z-index: 3; margin: 0;
+  padding: 12px; text-align: center; color: #fff7e7; background: rgba(80, 52, 26, .9);
+  font: 1rem/1.6 'Amiri', Georgia, serif;
+}
 body.language-pending .sections { visibility: hidden; }
 .language-gate {
   position: fixed; inset: 0; z-index: 40; display: grid; place-items: center;

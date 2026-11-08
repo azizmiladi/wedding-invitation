@@ -4,10 +4,13 @@ const video = document.getElementById('opening-video');
 const content = document.querySelector('main.sections');
 const enterButton = document.getElementById('enter-button');
 const soundButton = document.getElementById('sound-button');
+const playButton = document.getElementById('play-button');
+const videoError = document.getElementById('video-error');
 const languageGate = document.getElementById('language-gate');
 const languageNav = document.querySelector('.language-switch');
 let openingStarted = false;
 let videoRequest = 0;
+let stallTimer;
 content.setAttribute('aria-hidden', 'true');
 content.inert = true;
 
@@ -15,43 +18,84 @@ function syncSoundButton() {
   soundButton.setAttribute('aria-pressed', String(!video.muted));
   window.WeddingI18n.updateSoundLabel();
 }
-function loadVideo(language, fromTap) {
-  const request = ++videoRequest;
-  video.pause();
-  video.src = language === 'en' ? 'assets/wedding-en.mp4' : 'assets/wedding-ar.mp4';
-  video.preload = 'auto'; video.volume = 1; video.muted = !fromTap; video.load();
-  soundButton.hidden = false;
-  syncSoundButton();
+function introActive() { return openingStarted && !intro.hidden && !intro.classList.contains('is-leaving'); }
+function attemptPlayback(allowMutedRetry = true) {
+  if (!introActive()) return;
+  const request = videoRequest;
   const attempt = video.play();
-  if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {
-    if (request !== videoRequest) return;
-    video.muted = true; syncSoundButton();
-    const fallback = video.play();
-    if (fallback && typeof fallback.catch === 'function') fallback.catch(() => {});
+  if (!attempt || typeof attempt.catch !== 'function') return;
+  attempt.then(() => {
+    if (request === videoRequest) { playButton.hidden = true; syncSoundButton(); }
+  }).catch(() => {
+    if (request !== videoRequest || !introActive()) return;
+    if (!video.muted && allowMutedRetry) {
+      video.muted = true; syncSoundButton(); attemptPlayback(false);
+    } else playButton.hidden = false;
   });
 }
-function beginInvitation(language, fromTap) {
+function loadVideo(language) {
+  const request = ++videoRequest;
+  clearTimeout(stallTimer);
+  video.pause();
+  // Set both properties and HTML attributes before assigning the media source.
+  video.defaultMuted = true;
+  video.muted = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.setAttribute('muted', '');
+  video.setAttribute('autoplay', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  try { video.volume = 1; } catch {}
+  video.src = language === 'en' ? 'assets/wedding-en.mp4' : 'assets/wedding-ar.mp4';
+  video.preload = 'auto'; video.load();
+  playButton.hidden = true; videoError.hidden = true;
+  soundButton.hidden = false;
+  syncSoundButton();
+  attemptPlayback();
+  stallTimer = setTimeout(() => {
+    if (request === videoRequest && introActive() && video.paused && !video.ended) playButton.hidden = false;
+  }, 6000);
+}
+function beginInvitation(language) {
   window.WeddingI18n.setLanguage(language);
   openingStarted = true;
   languageGate.hidden = true; languageNav.hidden = false; intro.hidden = false;
   document.body.classList.remove('language-pending');
-  loadVideo(language, fromTap);
+  loadVideo(language);
   enterButton.focus({ preventScroll: true });
 }
 document.querySelectorAll('[data-start-language]').forEach(button => {
-  button.addEventListener('click', () => beginInvitation(button.dataset.startLanguage, true));
+  button.addEventListener('click', () => beginInvitation(button.dataset.startLanguage));
 });
 window.addEventListener('wedding:languagechange', () => {
-  if (openingStarted && !intro.hidden && !intro.classList.contains('is-leaving')) loadVideo(document.documentElement.lang, true);
+  if (introActive()) loadVideo(document.documentElement.lang);
 });
 soundButton.addEventListener('click', () => {
   video.muted = soundButton.getAttribute('aria-pressed') === 'true';
   syncSoundButton();
   if (video.paused) {
     if (video.ended) video.currentTime = 0;
-    const attempt = video.play();
-    if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {});
+    attemptPlayback();
   }
+});
+playButton.addEventListener('click', () => {
+  if (video.ended) video.currentTime = 0;
+  video.muted = false; syncSoundButton(); attemptPlayback();
+});
+function retryWhenReady() {
+  if (introActive() && video.paused && !video.ended && video.muted) attemptPlayback();
+}
+video.addEventListener('loadeddata', retryWhenReady);
+video.addEventListener('canplay', retryWhenReady);
+window.addEventListener('pageshow', retryWhenReady);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) retryWhenReady(); });
+video.addEventListener('playing', () => {
+  clearTimeout(stallTimer); playButton.hidden = true; videoError.hidden = true;
+});
+video.addEventListener('error', () => {
+  clearTimeout(stallTimer);
+  if (introActive()) { videoError.hidden = false; playButton.hidden = true; }
 });
 video.addEventListener('ended', () => { soundButton.hidden = true; });
 enterButton.addEventListener('click', () => {
@@ -69,6 +113,7 @@ enterButton.addEventListener('click', () => {
   setTimeout(() => { clearInterval(fadeAudio); finishOpening(); }, 900);
 });
 function finishOpening() {
+  clearTimeout(stallTimer);
   video.pause(); intro.hidden = true;
   document.body.classList.remove('intro-open');
   content.inert = false; content.removeAttribute('aria-hidden');
@@ -76,4 +121,4 @@ function finishOpening() {
   content.querySelector('h1').focus({ preventScroll: true });
 }
 // Standard URL waits for a choice; a language-specific URL starts directly.
-if (window.WeddingI18n.directLanguage) beginInvitation(window.WeddingI18n.directLanguage, false);
+if (window.WeddingI18n.directLanguage) beginInvitation(window.WeddingI18n.directLanguage);

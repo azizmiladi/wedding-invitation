@@ -15,11 +15,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400&family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=language-gate-22">
-  <script src="language.js?v=22" defer></script>
+  <link rel="stylesheet" href="styles.css?v=mobile-23">
+  <script src="language.js?v=23" defer></script>
   <script src="fit-basmala.js?v=5" defer></script>
   <script src="event-details.js?v=14" defer></script>
-  <script src="opening.js?v=22" defer></script>
+  <script src="opening.js?v=23" defer></script>
   <noscript><style>.intro, .language-gate { display: none; } body.intro-open { overflow: auto; } body.language-pending .sections { visibility: visible; }</style></noscript>
 </head>
 <body class="intro-open language-pending">
@@ -43,10 +43,12 @@
 
   <section class="intro" id="intro" aria-label="فيديو افتتاح دعوة الزفاف" data-i18n-aria-label="videoLabel" hidden>
     <div class="intro-video-wrap">
-      <video id="opening-video" class="intro-video" playsinline preload="none" poster="assets/video-poster.jpg" aria-label="فيديو افتتاح دعوة الزفاف" data-i18n-aria-label="videoLabel">
+      <video id="opening-video" class="intro-video" autoplay muted playsinline webkit-playsinline preload="none" poster="assets/video-poster.jpg" aria-label="فيديو افتتاح دعوة الزفاف" data-i18n-aria-label="videoLabel">
         <span data-i18n="videoFallback">متصفحك لا يدعم تشغيل الفيديو.</span>
       </video>
     </div>
+    <button id="play-button" class="video-play-button" type="button" hidden><span aria-hidden="true">▶</span><span data-i18n="playVideo">تشغيل الفيديو</span></button>
+    <p id="video-error" class="video-error" data-i18n="videoError" hidden>تعذر تحميل الفيديو. يمكنك متابعة الدعوة بالزر أدناه.</p>
     <div class="intro-actions">
       <span class="intro-ornament" aria-hidden="true">✦</span>
       <button class="intro-button intro-button--start" id="sound-button" type="button" hidden aria-pressed="false">🔈 تشغيل الصوت</button>
